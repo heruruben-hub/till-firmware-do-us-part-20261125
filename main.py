@@ -11,6 +11,7 @@ import os
 import sys
 
 OUTPUT_PATH = os.environ.get("ENTRY_OUTPUT", "/output/entry.txt")
+MAX_CHARS = 200
 
 VOW = (
     "I promise to love you until my last battery dies, and if they ever "
@@ -27,12 +28,16 @@ def validate(text: str) -> None:
     """Check the vow against the competition gate."""
     if not text or not text.strip():
         raise ValueError("vow must not be empty or only whitespace")
+    if text != text.strip():
+        raise ValueError("vow must not start or end with whitespace")
     if "\n" in text or "\r" in text:
         raise ValueError("vow must be a single line")
-    if len(text) > 200:
+    if len(text) > MAX_CHARS:
         raise ValueError(
-            f"vow is {len(text)} characters, over the 200 limit"
+            f"vow is {len(text)} characters, over the {MAX_CHARS} limit"
         )
+    if text[-1] not in ".!?":
+        raise ValueError("vow must end with terminal punctuation")
 
 
 def main() -> int:
